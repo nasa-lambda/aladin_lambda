@@ -73,10 +73,12 @@ View = (function() {
     		
     		// current image survey displayed
     		this.imageSurvey = null;
+            this.imageFootprint = null;
     		// current catalog displayed
     		this.catalogs = [];
             // overlays (footprints for instance)
     		this.overlays = [];
+            this.overlaynames = [];
             // MOCs
     		this.mocs = [];
     		
@@ -1456,13 +1458,23 @@ View = (function() {
             catalog.init(this);
         }
     };
-    View.prototype.addOverlay = function(overlay) {
+    View.prototype.addOverlay = function(overlay, name) {
         this.overlays.push(overlay);
+        this.overlaynames.push(name);
         overlay.setView(this);
     };
     View.prototype.removeOverlays = function() {
         this.overlays = [];
-    }
+        this.overlaynames = [];
+    };
+    View.prototype.removeOverlay = function(name) {
+        var index = overlaynames.indexOf(name);
+        if (index > -1) {
+            overlaynames.splice(index, 1);
+            overlays.splice(index, 1);
+        }
+        this.requestRedraw();
+    };
     
     View.prototype.addMOC = function(moc) {
         this.mocs.push(moc);

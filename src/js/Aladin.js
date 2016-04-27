@@ -133,7 +133,7 @@ Aladin = (function() {
 		this.view = new View(this, location, fovDiv, cooFrame, options.fov);
 		this.view.setShowGrid(options.showCooGrid);
 	    
-        // retrieve available surveys
+        // retrieve available backgrounds
 	    $.ajax({
             url: "http://lambda.gsfc.nasa.gov/toolbox/footprint/aladin/json_test.cfc",
             data: {"method": "getBackgrounds"},
@@ -158,7 +158,7 @@ Aladin = (function() {
 	        }
 	    });
 
-	    // retrieve available surveys
+	    // retrieve available footprints
 	    $.ajax({
             url: "http://lambda.gsfc.nasa.gov/toolbox/footprint/aladin/json_test.cfc",
             data: {"method": "getFootprints"},
@@ -177,6 +177,7 @@ Aladin = (function() {
                 }
 	            HpxImageSurvey.FOOTPRINTS = data;
                 self.view.setUnknownSurveyIfNeeded();
+                aladin.updateFootprintsDropdownList(HpxImageSurvey.getAvailableFootprints());
 	        },
 	        error: function(XHR, textStatus, errorThrown) {
                 console.log("Footprint Fail");
@@ -384,7 +385,7 @@ Aladin = (function() {
         var select = $(this.aladinDiv).find('.aladin-footprintSelection');
         select.empty();
         for (var i=0; i<surveys.length; i++) {
-            var isCurSurvey = this.view.imageSurvey.id==surveys[i].id;
+            var isCurSurvey = this.view.overlayImageSurvey.id==surveys[i].id;
             select.append($("<option />").attr("selected", isCurSurvey).val(surveys[i].id).text(surveys[i].name));
         };
     };
@@ -637,15 +638,18 @@ Aladin = (function() {
     Aladin.prototype.addCatalog = function(catalog) {
         this.view.addCatalog(catalog);
     };
-    Aladin.prototype.addOverlay = function(overlay) {
-        this.view.addOverlay(overlay);
+    Aladin.prototype.addOverlay = function(overlay, name) {
+        this.view.addOverlay(overlay, name);
     };
     Aladin.prototype.addMOC = function(moc) {
         this.view.addMOC(moc);
     };
     Aladin.prototype.removeOverlays = function() {
         this.view.removeOverlays();
-    }
+    };
+    Aladin.prototype.removeOverlay = function(name) {
+        this.view.removeOverlay(name);
+    };
     
 
   
@@ -990,7 +994,7 @@ Aladin = (function() {
              } else {
                 self.getOverlayImageLayer().setAlpha(0.0);
                 var overlay = A.graphicOverlay({color: '#ee2345', lineWidth: 3});
-                aladin.addOverlay(overlay);
+                aladin.addOverlay(overlay, footprint.id);
                 console.log("Footprint is outline");
                 //var ras = footprint.ras.split(" ");
                 //var decs = footprint.decs.split(" ");
