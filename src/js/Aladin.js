@@ -177,7 +177,6 @@ Aladin = (function() {
                 }
 	            HpxImageSurvey.FOOTPRINTS = data;
                 self.view.setUnknownSurveyIfNeeded();
-                aladin.updateFootprintsDropdownList(HpxImageSurvey.getAvailableFootprints());
 	        },
 	        error: function(XHR, textStatus, errorThrown) {
                 console.log("Footprint Fail");
@@ -387,6 +386,40 @@ Aladin = (function() {
         for (var i=0; i<surveys.length; i++) {
             var isCurSurvey = this.view.overlayImageSurvey.id==surveys[i].id;
             select.append($("<option />").attr("selected", isCurSurvey).val(surveys[i].id).text(surveys[i].name));
+        };
+    };
+
+    Aladin.prototype.createFootprintsCheckbox = function(surveys) {
+        console.log("Creating");
+        surveys = surveys.sort(function(a, b) {
+            if (! a.order) {
+                return a.id > b.id;
+            }
+            return a.order && a.order > b.order ? 1 : -1;
+        });
+        var checkboxes = $(this.aladinDiv).find('.aladin-footprintSelection');
+        checkboxes.empty();
+        overlayNames = aladin.getOverlayNames();
+        console.log(overlayNames);
+        for (var i=0; i<surveys.length; i++) {
+            var listentry = $("<li>").attr("name", surveys[i].id);
+            var checkboxentry = $("<input type='checkbox'>").attr("name", surveys[i].id);
+            var found = $.inArray(surveys[i].id, overlayNames) > -1;
+            if (found) {
+                checkboxentry.attr("checked", true);
+            }
+            listentry.append(checkboxentry);
+            listentry.append(surveys[i].name);
+            if (found) {
+                colorselect = $("<select>").attr("class", '.aladin-footprintColor').attr("name", surveys[i].id);
+                colorselect.append($("<option />").text("Red"));
+                colorselect.append($("<option />").text("Green"));
+                colorselect.append($("<option />").text("Blue"));
+                colorselect.append($("<option />").text("Aqua"));
+                colorselect.append($("<option />").text("Magenta"));
+                listentry.append(colorselect);
+            }
+            checkboxes.append(listentry);
         };
     };
     
@@ -650,6 +683,9 @@ Aladin = (function() {
     Aladin.prototype.removeOverlay = function(name) {
         this.view.removeOverlay(name);
     };
+    Aladin.prototype.getOverlayNames = function() {
+        return this.view.getOverlayNames();
+    }
     
 
   
@@ -689,7 +725,7 @@ Aladin = (function() {
     // @api
     Aladin.prototype.setOverlayImageLayer = function(imageSurvey, callback) {
         this.view.setOverlayImageSurvey(imageSurvey, callback);
-        this.updateFootprintsDropdownList(HpxImageSurvey.getAvailableFootprints());
+        //this.updateFootprintsDropdownList(HpxImageSurvey.getAvailableFootprints());
         if (this.options.log) {
             var id = imageSurvey;
             if (typeof imageSurvey !== "string") {
@@ -884,7 +920,7 @@ Aladin = (function() {
                  '<div><select class="aladin-cmSelection"></select><button class="aladin-btn aladin-btn-small aladin-reverseCm" type="button">Reverse</button></div></div>' +
                  '<div class="aladin-box-separator"></div>' +
                  '<div class="aladin-label">Footprint</div>' +
-                 '<select class="aladin-footprintSelection"></select>' +
+                 '<div class="aladin-footprintSelection"></div>' +
                  '<div class="aladin-label">Overlay layers</div>');
          
          var cmDiv = layerBox.find('.aladin-cmap');
@@ -982,7 +1018,7 @@ Aladin = (function() {
          });
 
          // update list of overlaid footprints
-         this.updateFootprintsDropdownList(HpxImageSurvey.getAvailableFootprints());
+         /*this.updateFootprintsDropdownList(HpxImageSurvey.getAvailableFootprints());
          var footprintSelection = $(this.aladinDiv).find('.aladin-footprintSelection');
          footprintSelection.change(function() {
              var footprint = HpxImageSurvey.getAvailableFootprints()[$(this)[0].selectedIndex];
@@ -1008,7 +1044,68 @@ Aladin = (function() {
                 }
                 overlay.addFootprints(A.polygon(polygon));
              } 
+         });*/
+
+         // update list of overlaid footprints 2
+         this.createFootprintsCheckbox(HpxImageSurvey.getAvailableFootprints());
+         var footprintSelection = $(this.aladinDiv).find('.aladin-footprintSelection');
+         footprintSelection.change(function() {
+             self.getOverlayImageLayer().setAlpha(0.0);
+             aladin.removeOverlays();
+             console.log("Change");
+             var selected = [];
+             $('.aladin-footprintSelection input:checked').each(function() {
+                 selected.push($(this).attr('name'));
+             });
+             var footprints = HpxImageSurvey.getAvailableFootprints();
+             console.log(selected);
+             for (var i=0; i<footprints.length; i++) {
+                 var found = $.inArray(footprints[i].id, selected) > -1;
+                 if (found) {
+                     try {
+                        var colorindex = $("select[name='"+footprints[i].id+"']")[0].selectedIndex;
+                        console.log(colorindex);
+                     } catch(err) {
+                        var colorindex = 0;
+                        var listentry = $("li[name='"+footprints[i].id+"']");
+                        colorselect = $("<select>").attr("class", '.aladin-footprintColor').attr("name", footprints[i].id);
+                        colorselect.append($("<option />").text("Red"));
+                        colorselect.append($("<option />").text("Green"));
+                        colorselect.append($("<option />").text("Blue"));
+                        colorselect.append($("<option />").text("Aqua"));
+                        colorselect.append($("<option />").text("Magenta"));
+                        listentry.append(colorselect);
+                     }
+                     if (footprints[i].url) {
+                         self.setOverlayImageLayer(footprints[i].id);
+                         self.getOverlayImageLayer().setAlpha(0.5);
+                     } else {
+                         if (colorindex == 0) {
+                             colorval = '#ee2345'; //red
+                         } else if (colorindex == 1) {
+                             colorval = '#00FF00'; // green
+                         } else if (colorindex == 2) {
+                             colorval = '#0000FF'; // blue
+                         } else if (colorindex == 3) {
+                             colorval = '#00FFFF'; // aqua
+                         } else if (colorindex == 4) {
+                             colorval = '#FF00FF'; // magenta
+                         }
+                         var overlay = A.graphicOverlay({color: colorval, lineWidth: 3});
+                         aladin.addOverlay(overlay, footprints[i].id);
+                         var ras = footprints[i].ras;
+                         var decs = footprints[i].decs;
+                         var polygon = new Array(1);
+                         for (var k=0; k<ras.length; k++) {
+                            var tmp2 = [ras[k], decs[k]];
+                            polygon[k] = tmp2;
+                         }
+                         overlay.addFootprints(A.polygon(polygon));
+                     }
+                 }
+             }
          });
+         
          
          //// COLOR MAP management ////////////////////////////////////////////
          // update color map

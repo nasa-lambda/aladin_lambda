@@ -355,7 +355,11 @@ word-wrap:break-word;
 }
 
 .aladin-footprintSelection {
-    width: 200px;
+    width: 250px;
+}
+
+.aladin-footprintColor {
+    width: 50px;
 }
 
 .aladin-cmSelection {

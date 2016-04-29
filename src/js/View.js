@@ -1468,13 +1468,16 @@ View = (function() {
         this.overlaynames = [];
     };
     View.prototype.removeOverlay = function(name) {
-        var index = overlaynames.indexOf(name);
+        var index = this.overlaynames.indexOf(name);
         if (index > -1) {
-            overlaynames.splice(index, 1);
-            overlays.splice(index, 1);
+            this.overlaynames.splice(index, 1);
+            this.overlays.splice(index, 1);
         }
         this.requestRedraw();
     };
+    View.prototype.getOverlayNames = function() {
+        return this.overlaynames;
+    }
     
     View.prototype.addMOC = function(moc) {
         this.mocs.push(moc);
