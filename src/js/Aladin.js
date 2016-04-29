@@ -390,7 +390,6 @@ Aladin = (function() {
     };
 
     Aladin.prototype.createFootprintsCheckbox = function(surveys) {
-        console.log("Creating");
         surveys = surveys.sort(function(a, b) {
             if (! a.order) {
                 return a.id > b.id;
@@ -1109,6 +1108,11 @@ Aladin = (function() {
                             polygon[k] = tmp2;
                          }
                          overlay.addFootprints(A.polygon(polygon));
+                     }
+                 } else {
+                     var colorSelect = $("select[name='"+footprints[i].id+"']")[0];
+                     if (colorSelect) {
+                         colorSelect.remove();
                      }
                  }
              }
