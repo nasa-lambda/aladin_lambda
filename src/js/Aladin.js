@@ -400,23 +400,28 @@ Aladin = (function() {
         var checkboxes = $(this.aladinDiv).find('.aladin-footprintSelection');
         checkboxes.empty();
         overlayNames = aladin.getOverlayNames();
+        overlayColors = aladin.getOverlayColors();
         console.log(overlayNames);
         for (var i=0; i<surveys.length; i++) {
             var listentry = $("<li>").attr("name", surveys[i].id);
             var checkboxentry = $("<input type='checkbox'>").attr("name", surveys[i].id);
-            var found = $.inArray(surveys[i].id, overlayNames) > -1;
+            var index = $.inArray(surveys[i].id, overlayNames);
+            var found = index > -1;
             if (found) {
+                console.log("AAA: ", overlayColors);
+                console.log("BBB: ", overlayNames);
+                colorIndex = overlayColors[index];
                 checkboxentry.attr("checked", true);
             }
             listentry.append(checkboxentry);
             listentry.append(surveys[i].name);
             if (found) {
                 colorselect = $("<select>").attr("class", '.aladin-footprintColor').attr("name", surveys[i].id);
-                colorselect.append($("<option />").text("Red"));
-                colorselect.append($("<option />").text("Green"));
-                colorselect.append($("<option />").text("Blue"));
-                colorselect.append($("<option />").text("Aqua"));
-                colorselect.append($("<option />").text("Magenta"));
+                colorselect.append($("<option />").text("Red").attr("selected", colorIndex == 0));
+                colorselect.append($("<option />").text("Green").attr("selected", colorIndex == 1));
+                colorselect.append($("<option />").text("Blue").attr("selected", colorIndex == 2));
+                colorselect.append($("<option />").text("Aqua").attr("selected", colorIndex == 3));
+                colorselect.append($("<option />").text("Magenta").attr("selected", colorIndex == 4));
                 listentry.append(colorselect);
             }
             checkboxes.append(listentry);
@@ -671,8 +676,8 @@ Aladin = (function() {
     Aladin.prototype.addCatalog = function(catalog) {
         this.view.addCatalog(catalog);
     };
-    Aladin.prototype.addOverlay = function(overlay, name) {
-        this.view.addOverlay(overlay, name);
+    Aladin.prototype.addOverlay = function(overlay, name, colorIndex) {
+        this.view.addOverlay(overlay, name, colorIndex);
     };
     Aladin.prototype.addMOC = function(moc) {
         this.view.addMOC(moc);
@@ -685,6 +690,9 @@ Aladin = (function() {
     };
     Aladin.prototype.getOverlayNames = function() {
         return this.view.getOverlayNames();
+    }
+    Aladin.prototype.getOverlayColors = function() {
+        return this.view.getOverlayColors();
     }
     
 
@@ -1063,10 +1071,10 @@ Aladin = (function() {
                  var found = $.inArray(footprints[i].id, selected) > -1;
                  if (found) {
                      try {
-                        var colorindex = $("select[name='"+footprints[i].id+"']")[0].selectedIndex;
-                        console.log(colorindex);
+                        var colorIndex = $("select[name='"+footprints[i].id+"']")[0].selectedIndex;
+                        console.log(colorIndex);
                      } catch(err) {
-                        var colorindex = 0;
+                        var colorIndex = 0;
                         var listentry = $("li[name='"+footprints[i].id+"']");
                         colorselect = $("<select>").attr("class", '.aladin-footprintColor').attr("name", footprints[i].id);
                         colorselect.append($("<option />").text("Red"));
@@ -1080,19 +1088,19 @@ Aladin = (function() {
                          self.setOverlayImageLayer(footprints[i].id);
                          self.getOverlayImageLayer().setAlpha(0.5);
                      } else {
-                         if (colorindex == 0) {
+                         if (colorIndex == 0) {
                              colorval = '#ee2345'; //red
-                         } else if (colorindex == 1) {
+                         } else if (colorIndex == 1) {
                              colorval = '#00FF00'; // green
-                         } else if (colorindex == 2) {
+                         } else if (colorIndex == 2) {
                              colorval = '#0000FF'; // blue
-                         } else if (colorindex == 3) {
+                         } else if (colorIndex == 3) {
                              colorval = '#00FFFF'; // aqua
-                         } else if (colorindex == 4) {
+                         } else if (colorIndex == 4) {
                              colorval = '#FF00FF'; // magenta
                          }
                          var overlay = A.graphicOverlay({color: colorval, lineWidth: 3});
-                         aladin.addOverlay(overlay, footprints[i].id);
+                         aladin.addOverlay(overlay, footprints[i].id, colorIndex);
                          var ras = footprints[i].ras;
                          var decs = footprints[i].decs;
                          var polygon = new Array(1);

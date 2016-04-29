@@ -78,7 +78,8 @@ View = (function() {
     		this.catalogs = [];
             // overlays (footprints for instance)
     		this.overlays = [];
-            this.overlaynames = [];
+            this.overlayNames = [];
+            this.overlayColors = [];
             // MOCs
     		this.mocs = [];
     		
@@ -1458,26 +1459,32 @@ View = (function() {
             catalog.init(this);
         }
     };
-    View.prototype.addOverlay = function(overlay, name) {
+    View.prototype.addOverlay = function(overlay, name, colorIndex) {
         this.overlays.push(overlay);
-        this.overlaynames.push(name);
+        this.overlayNames.push(name);
+        this.overlayColors.push(colorIndex);
         overlay.setView(this);
     };
     View.prototype.removeOverlays = function() {
         this.overlays = [];
-        this.overlaynames = [];
+        this.overlayNames = [];
+        this.overlayColors = [];
     };
     View.prototype.removeOverlay = function(name) {
-        var index = this.overlaynames.indexOf(name);
+        var index = this.overlayNames.indexOf(name);
         if (index > -1) {
-            this.overlaynames.splice(index, 1);
+            this.overlayNames.splice(index, 1);
+            this.overlayColors.splice(index, 1);
             this.overlays.splice(index, 1);
         }
         this.requestRedraw();
     };
     View.prototype.getOverlayNames = function() {
-        return this.overlaynames;
-    }
+        return this.overlayNames;
+    };
+    View.prototype.getOverlayColors = function() {
+        return this.overlayColors;
+    };
     
     View.prototype.addMOC = function(moc) {
         this.mocs.push(moc);
