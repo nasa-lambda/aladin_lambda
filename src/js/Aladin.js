@@ -140,6 +140,7 @@ Aladin = (function() {
             method: 'GET',
 	        dataType: 'jsonp',
 	        success: function(data) {
+                console.log("Background success");
                 var map = {};
                 for (var k=0; k<data.length; k++) {
                     map[data[k].id] = true;
@@ -151,6 +152,7 @@ Aladin = (function() {
                     }
                 }
 	            HpxImageSurvey.BACKGROUNDS = data;
+                HpxImageSurvey.SURVEYS = HpxImageSurvey.BACKGROUNDS.concat(HpxImageSurvey.FOOTPRINTS);
                 self.view.setUnknownSurveyIfNeeded();
 	        },
 	        error: function(XHR, textStatus, errorThrown) {
@@ -165,6 +167,7 @@ Aladin = (function() {
             method: 'GET',
 	        dataType: 'jsonp',
 	        success: function(data) {
+                console.log("Footprint success");
                 var map = {};
                 for (var k=0; k<data.length; k++) {
                     map[data[k].id] = true;
@@ -176,15 +179,14 @@ Aladin = (function() {
                     }
                 }
 	            HpxImageSurvey.FOOTPRINTS = data;
+                HpxImageSurvey.SURVEYS = HpxImageSurvey.BACKGROUNDS.concat(HpxImageSurvey.FOOTPRINTS);
                 self.view.setUnknownSurveyIfNeeded();
 	        },
 	        error: function(XHR, textStatus, errorThrown) {
                 console.log("Footprint Fail");
 	        }
 	    });
-		
-        HpxImageSurvey.SURVEYS = HpxImageSurvey.BACKGROUNDS.concat(HpxImageSurvey.FOOTPRINTS);
-        
+
 	      // layers control panel
         // TODO : valeur des checkbox en fonction des options
 		// TODO : classe LayerBox
@@ -360,11 +362,14 @@ Aladin = (function() {
     };
     
     Aladin.prototype.updateSurveysDropdownList = function(surveys) {
-        surveys = surveys.sort(function(a, b) {
-            if (! a.order) {
-                return a.id > b.id;
-            }
-            return a.order && a.order > b.order ? 1 : -1;
+        surveys.sort(function(a, b) {
+            if (a.name > b.name) {
+                return 1;
+            } else if (a.name < b.name) {
+                return -1;
+            } else {
+                return 0;
+            };
         });
         var select = $(this.aladinDiv).find('.aladin-surveySelection');
         select.empty();
@@ -373,9 +378,9 @@ Aladin = (function() {
             select.append($("<option />").attr("selected", isCurSurvey).val(surveys[i].id).text(surveys[i].name));
         };
     };
-    
-    Aladin.prototype.updateFootprintsDropdownList = function(surveys) {
-        surveys = surveys.sort(function(a, b) {
+ 
+    /*Aladin.prototype.updateFootprintsDropdownList = function(surveys) {
+        surveys.sort(function(a, b) {
             if (! a.order) {
                 return a.id > b.id;
             }
@@ -387,28 +392,28 @@ Aladin = (function() {
             var isCurSurvey = this.view.overlayImageSurvey.id==surveys[i].id;
             select.append($("<option />").attr("selected", isCurSurvey).val(surveys[i].id).text(surveys[i].name));
         };
-    };
+    };*/
 
     Aladin.prototype.createFootprintsCheckbox = function(surveys) {
-        surveys = surveys.sort(function(a, b) {
-            if (! a.order) {
-                return a.id > b.id;
-            }
-            return a.order && a.order > b.order ? 1 : -1;
+        surveys.sort(function(a, b) {
+            if (a.name > b.name) {
+                return 1;
+            } else if (a.name < b.name) {
+                return -1;
+            } else {
+                return 0;
+            };
         });
         var checkboxes = $(this.aladinDiv).find('.aladin-footprintSelection');
         checkboxes.empty();
         overlayNames = aladin.getOverlayNames();
         overlayColors = aladin.getOverlayColors();
-        console.log(overlayNames);
         for (var i=0; i<surveys.length; i++) {
             var listentry = $("<li>").attr("name", surveys[i].id);
             var checkboxentry = $("<input type='checkbox'>").attr("name", surveys[i].id);
             var index = $.inArray(surveys[i].id, overlayNames);
             var found = index > -1;
             if (found) {
-                console.log("AAA: ", overlayColors);
-                console.log("BBB: ", overlayNames);
                 colorIndex = overlayColors[index];
                 checkboxentry.attr("checked", true);
             }
@@ -1059,19 +1064,18 @@ Aladin = (function() {
          footprintSelection.change(function() {
              self.getOverlayImageLayer().setAlpha(0.0);
              aladin.removeOverlays();
-             console.log("Change");
+             //console.log("Change");
              var selected = [];
              $('.aladin-footprintSelection input:checked').each(function() {
                  selected.push($(this).attr('name'));
              });
              var footprints = HpxImageSurvey.getAvailableFootprints();
-             console.log(selected);
+             //console.log(selected);
              for (var i=0; i<footprints.length; i++) {
                  var found = $.inArray(footprints[i].id, selected) > -1;
                  if (found) {
                      try {
                         var colorIndex = $("select[name='"+footprints[i].id+"']")[0].selectedIndex;
-                        console.log(colorIndex);
                      } catch(err) {
                         var colorIndex = 0;
                         var listentry = $("li[name='"+footprints[i].id+"']");

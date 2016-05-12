@@ -279,45 +279,20 @@ HpxImageSurvey = (function() {
         "maxOrder": 3,
         "frame": "galactic",
         "format": "png fits"
-    },
-    {
-        "id": "PlanckDust",
-        "url": "http://lambda.gsfc.nasa.gov/data/hips/Planck_Dust/",
-        "name": "Planck Dust Test",
-        "maxOrder": 3,
-        "frame": "galactic",
-        "format": "png fits"
-    },
-    //{
-    //    "id": "SPIDER",
-    //    "url": "http://lambda.gsfc.nasa.gov/data/hips/SPIDER_hits_150GHz",
-    //    "name": "SPIDER Test",
-    //    "maxOrder": 3,
-    //    "frame": "galactic",
-    //    "format": "png fits"
-    //}
-  ];
-
-  HpxImageSurvey.FOOTPRINTS = [
-    {
-        "id": "SPIDER",
-        "url": "http://lambda.gsfc.nasa.gov/data/hips/SPIDER_hits_150GHz",
-        "name": "SPIDER Test",
-        "maxOrder": 3,
-        "frame": "galactic",
-        "format": "png fits"
-    },
-
-    {
-        "id": "SQUARE",
-        "name": "Outline Test",
-        "frame": "galactic",
-        "ras": [-20, 20, 20, -20],
-        "decs": [20, 20, -20, -20]
     }
   ];
 
-  //HpxImageSurvey.SURVEYS = $.extend(HpxImageSurvey.BACKGROUNDS, HpxImageSurvey.FOOTPRINTS);
+  HpxImageSurvey.FOOTPRINTS = [
+    /*{
+        "id": "SPIDER",
+        "url": "http://lambda.gsfc.nasa.gov/data/hips/SPIDER_hits_150GHz",
+        "name": "SPIDER 150 GHz",
+        "maxOrder": 3,
+        "frame": "galactic",
+        "format": "png fits"
+    }*/
+  ];
+
   HpxImageSurvey.SURVEYS = HpxImageSurvey.BACKGROUNDS.concat(HpxImageSurvey.FOOTPRINTS);
 
     HpxImageSurvey.getAvailableSurveys = function() {
@@ -333,6 +308,7 @@ HpxImageSurvey = (function() {
     };
 
     HpxImageSurvey.getSurveyInfoFromId = function(id) {
+        //HpxImageSurvey.SURVEYS = HpxImageSurvey.BACKGROUNDS.concat(HpxImageSurvey.FOOTPRINTS);
         var surveys = HpxImageSurvey.getAvailableSurveys();
         for (var i=0; i<surveys.length; i++) {
             if (surveys[i].id==id) {
