@@ -408,12 +408,18 @@ Aladin = (function() {
         checkboxes.empty();
         overlayNames = aladin.getOverlayNames();
         overlayColors = aladin.getOverlayColors();
+        hipsFootprint = aladin.getOverlayImageLayer();
         for (var i=0; i<surveys.length; i++) {
             var listentry = $("<li>").attr("name", surveys[i].id);
             var checkboxentry = $("<input type='checkbox'>").attr("name", surveys[i].id);
             var index = $.inArray(surveys[i].id, overlayNames);
             var found = index > -1;
-            if (found) {
+            if (hipsFootprint) {
+                foundHiPS = (hipsFootprint.id == surveys[i].id) && (hipsFootprint.getAlpha() > 0);
+            } else {
+                foundHiPS = false;
+            }
+            if (found || foundHiPS) {
                 colorIndex = overlayColors[index];
                 checkboxentry.attr("checked", true);
             }
@@ -1062,15 +1068,16 @@ Aladin = (function() {
          this.createFootprintsCheckbox(HpxImageSurvey.getAvailableFootprints());
          var footprintSelection = $(this.aladinDiv).find('.aladin-footprintSelection');
          footprintSelection.change(function() {
-             self.getOverlayImageLayer().setAlpha(0.0);
+             hipsFootprint = self.getOverlayImageLayer()
+             if (hipsFootprint) {
+                 hipsFootprint.setAlpha(0.0);
+             }
              aladin.removeOverlays();
-             //console.log("Change");
              var selected = [];
              $('.aladin-footprintSelection input:checked').each(function() {
                  selected.push($(this).attr('name'));
              });
              var footprints = HpxImageSurvey.getAvailableFootprints();
-             //console.log(selected);
              for (var i=0; i<footprints.length; i++) {
                  var found = $.inArray(footprints[i].id, selected) > -1;
                  if (found) {
