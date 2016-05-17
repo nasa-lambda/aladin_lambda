@@ -623,6 +623,7 @@ View = (function() {
                 this.flagForceRedraw = false;
             }
 		}
+        
 		this.stats.update();
         //console.log("redraw at " + now);
 
@@ -648,7 +649,7 @@ View = (function() {
                 imageCtx.fillRect(0, 0, this.imageCanvas.width, this.imageCanvas.height);
             }
         }
-
+        
         
         // TODO : voir si on doit vraiment faire ces vérifs à chaque coup
 		if (!this.projection) {
@@ -658,7 +659,7 @@ View = (function() {
 			this.projection.setCenter(this.viewCenter.lon, this.viewCenter.lat);
 		}
 		this.projection.setProjection(this.projectionMethod);
-	
+        	
 
 		// ************* Tracé au niveau allsky (faible résolution) *****************
 
@@ -693,10 +694,11 @@ View = (function() {
         */
 		
         var cornersXYViewMapAllsky = this.getVisibleCells(3);
-
+        
         // redraw overlay image survey
 		// TODO : does not work if different frames 
 		if (this.overlayImageSurvey && this.overlayImageSurvey.isReady) {
+            var cornersXYViewMapAllsky = this.getVisibleCells(3, this.overlayImageSurvey.cooFrame);
 		    imageCtx.globalAlpha = this.overlayImageSurvey.getAlpha();
 	        if (this.fov>50) {
 		        this.overlayImageSurvey.redrawAllsky(imageCtx, cornersXYViewMapAllsky, this.fov, this.curOverlayNorder);
@@ -704,14 +706,16 @@ View = (function() {
 	        if (this.curOverlayNorder>=3) {
                 var norderOverlay = Math.min(this.curOverlayNorder, this.overlayImageSurvey.maxOrder);
                 if ( norderOverlay != this.curNorder ) {
-				    cornersXYViewMapHighres = this.getVisibleCells(norderOverlay);
+				    //cornersXYViewMapHighres = this.getVisibleCells(norderOverlay);
+				    cornersXYViewMapHighres = this.getVisibleCells(norderOverlay, this.overlayImageSurvey.cooFrame);
                 }
                 else {
-                    cornersXYViewMapHighres = this.getVisibleCells(this.curNorder);
+                    //cornersXYViewMapHighres = this.getVisibleCells(this.curNorder);
+                    cornersXYViewMapHighres = this.getVisibleCells(this.curNorder, this.overlayImageSurvey.cooFrame);
                 }
 	            this.overlayImageSurvey.redrawHighres(imageCtx, cornersXYViewMapHighres, norderOverlay);
 	        }
-           imageCtx.globalAlpha = 1.0;
+           //imageCtx.globalAlpha = 1.0;
 
 		}
 		

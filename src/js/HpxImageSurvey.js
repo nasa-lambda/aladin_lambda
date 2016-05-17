@@ -396,8 +396,6 @@ HpxImageSurvey = (function() {
         var cornersXYViewMapAllsky = view.getVisibleCells(3);
         var cornersXYViewMapHighres = null;
 
-
-
         if (view.curNorder>=3) {
             if (view.curNorder==3) {
                 cornersXYViewMapHighres = cornersXYViewMapAllsky;
@@ -659,7 +657,6 @@ console.log('*******************************************************************
         
         // apply CM
         var newImg = this.useCors ? this.cm.apply(img) : img;
-        
         
     	// is the tile a diamond ?
     //	var round = AladinUtils.myRound;
