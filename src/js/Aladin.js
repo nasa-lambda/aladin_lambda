@@ -425,7 +425,7 @@ Aladin = (function() {
             }
             listentry.append(checkboxentry);
             listentry.append(surveys[i].name);
-            if (found) {
+            if (found || foundHiPS) {
                 colorselect = $("<select>").attr("class", '.aladin-footprintColor').attr("name", surveys[i].id);
                 colorselect.append($("<option />").text("Red").attr("selected", colorIndex == 0));
                 colorselect.append($("<option />").text("Green").attr("selected", colorIndex == 1));
@@ -694,6 +694,7 @@ Aladin = (function() {
     };
     Aladin.prototype.removeOverlays = function() {
         this.view.removeOverlays();
+        this.view.setOverlayImageSurvey()
     };
     Aladin.prototype.removeOverlay = function(name) {
         this.view.removeOverlay(name);
@@ -753,7 +754,6 @@ Aladin = (function() {
             Logger.log("changeOverlay", id);
         }
     };
-    
 
     Aladin.prototype.increaseZoom = function(step) {
         if (!step) {
@@ -1036,42 +1036,9 @@ Aladin = (function() {
          });
 
          // update list of overlaid footprints
-         /*this.updateFootprintsDropdownList(HpxImageSurvey.getAvailableFootprints());
-         var footprintSelection = $(this.aladinDiv).find('.aladin-footprintSelection');
-         footprintSelection.change(function() {
-             var footprint = HpxImageSurvey.getAvailableFootprints()[$(this)[0].selectedIndex];
-             if (footprint.url) {
-                console.log('Footprint is HIPS');
-                aladin.removeOverlays();
-                self.setOverlayImageLayer(footprint.id);
-                self.getOverlayImageLayer().setAlpha(0.5);
-             } else {
-                self.getOverlayImageLayer().setAlpha(0.0);
-                var overlay = A.graphicOverlay({color: '#ee2345', lineWidth: 3});
-                aladin.addOverlay(overlay, footprint.id);
-                console.log("Footprint is outline");
-                //var ras = footprint.ras.split(" ");
-                //var decs = footprint.decs.split(" ");
-                var ras = footprint.ras;
-                var decs = footprint.decs;
-                var polygon = new Array(ras.length);
-                for (var k=0; k<ras.length; k++) {
-                    //var tmp2 = [parseFloat(ras[k]), parseFloat(decs[k])];
-                    var tmp2 = [ras[k], decs[k]];
-                    polygon[k] = tmp2;
-                }
-                overlay.addFootprints(A.polygon(polygon));
-             } 
-         });*/
-
-         // update list of overlaid footprints 2
          this.createFootprintsCheckbox(HpxImageSurvey.getAvailableFootprints());
          var footprintSelection = $(this.aladinDiv).find('.aladin-footprintSelection');
          footprintSelection.change(function() {
-             hipsFootprint = self.getOverlayImageLayer()
-             if (hipsFootprint) {
-                 hipsFootprint.setAlpha(0.0);
-             }
              aladin.removeOverlays();
              var selected = [];
              $('.aladin-footprintSelection input:checked').each(function() {
@@ -1096,10 +1063,22 @@ Aladin = (function() {
                      }
                      if (footprints[i].url) {
                          self.setOverlayImageLayer(footprints[i].id);
-                         self.getOverlayImageLayer().setAlpha(0.5);
+                         self.getOverlayImageLayer().setAlpha(1.0);
+                         if (colorIndex == 0) {
+                             self.getOverlayImageLayer().getColorMap().update('red');
+                         } else if (colorIndex == 1) {
+                             self.getOverlayImageLayer().getColorMap().update('green');
+                         } else if (colorIndex == 2) {
+                             self.getOverlayImageLayer().getColorMap().update('blue');
+                         } else if (colorIndex == 3) {
+                             self.getOverlayImageLayer().getColorMap().update('aqua');
+                         } else if (colorIndex == 4) {
+                             self.getOverlayImageLayer().getColorMap().update('magenta');
+                         } 
                      } else {
                          if (colorIndex == 0) {
-                             colorval = '#ee2345'; //red
+                             //colorval = '#ee2345'; //red
+                             colorval = '#FF0000'; //red
                          } else if (colorIndex == 1) {
                              colorval = '#00FF00'; // green
                          } else if (colorIndex == 2) {

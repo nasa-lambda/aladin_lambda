@@ -284,11 +284,11 @@ HpxImageSurvey = (function() {
 
   HpxImageSurvey.FOOTPRINTS = [
     /*{
-        "id": "SPIDER",
-        "url": "http://lambda.gsfc.nasa.gov/data/hips/SPIDER_hits_150GHz",
-        "name": "SPIDER 150 GHz",
+        "id": "SPIDER-Test",
+        "url": "http://lambda.gsfc.nasa.gov/data/hips/SPIDER_hits_150ghz.fitsHiPS",
+        "name": "AAA SPIDER Test",
         "maxOrder": 3,
-        "frame": "galactic",
+        "frame": "equatorial",
         "format": "png fits"
     }*/
   ];
@@ -456,7 +456,7 @@ console.log('*******************************************************************
         var coeff = 0;
         var center;
         var ipix;
-    	
+    
         for (var k=0, len=cornersXYViewMap.length; k<len; k++) {
     		cornersXYView = cornersXYViewMap[k];
     		ipix = cornersXYView.ipix;
@@ -657,7 +657,7 @@ console.log('*******************************************************************
         
         // apply CM
         var newImg = this.useCors ? this.cm.apply(img) : img;
-        
+
     	// is the tile a diamond ?
     //	var round = AladinUtils.myRound;
     //	var b = cornersXYView;
