@@ -379,21 +379,6 @@ Aladin = (function() {
         };
     };
  
-    /*Aladin.prototype.updateFootprintsDropdownList = function(surveys) {
-        surveys.sort(function(a, b) {
-            if (! a.order) {
-                return a.id > b.id;
-            }
-            return a.order && a.order > b.order ? 1 : -1;
-        });
-        var select = $(this.aladinDiv).find('.aladin-footprintSelection');
-        select.empty();
-        for (var i=0; i<surveys.length; i++) {
-            var isCurSurvey = this.view.overlayImageSurvey.id==surveys[i].id;
-            select.append($("<option />").attr("selected", isCurSurvey).val(surveys[i].id).text(surveys[i].name));
-        };
-    };*/
-
     Aladin.prototype.createFootprintsCheckbox = function(surveys) {
         surveys.sort(function(a, b) {
             if (a.name > b.name) {
@@ -408,21 +393,38 @@ Aladin = (function() {
         checkboxes.empty();
         overlayNames = aladin.getOverlayNames();
         overlayColors = aladin.getOverlayColors();
-        hipsFootprint = aladin.getOverlayImageLayer();
+        hipsFootprints = aladin.getOverlayImageLayers();
         for (var i=0; i<surveys.length; i++) {
             var listentry = $("<li>").attr("name", surveys[i].id);
             var checkboxentry = $("<input type='checkbox'>").attr("name", surveys[i].id);
             var index = $.inArray(surveys[i].id, overlayNames);
             var found = index > -1;
-            if (hipsFootprint) {
-                foundHiPS = (hipsFootprint.id == surveys[i].id) && (hipsFootprint.getAlpha() > 0);
-            } else {
-                foundHiPS = false;
-            }
-            if (found || foundHiPS) {
+            if (found) {
                 colorIndex = overlayColors[index];
                 checkboxentry.attr("checked", true);
             }
+            
+            foundHiPS = false;
+            for (var j=0; j<hipsFootprints.length; j++) {
+                if (hipsFootprints[j].id == surveys[i].id) {
+                    foundHiPS = true;
+                    checkboxentry.attr("checked", true);
+                    color = hipsFootprints[j].getColorMap()['map'];
+                    if (color == 'red') {
+                        colorIndex = 0;
+                    } else if (color == 'green') {
+                        colorIndex = 1;
+                    } else if (color == 'blue') {
+                        colorIndex = 2;
+                    } else if (color == 'aqua') {
+                        colorIndex = 3;
+                    } else if (color == 'magenta') {
+                        colorIndex = 4;
+                    }
+                    break;
+                }
+            }
+
             listentry.append(checkboxentry);
             listentry.append(surveys[i].name);
             if (found || foundHiPS) {
@@ -694,7 +696,7 @@ Aladin = (function() {
     };
     Aladin.prototype.removeOverlays = function() {
         this.view.removeOverlays();
-        this.view.setOverlayImageSurvey()
+        this.view.setOverlayImageSurvey();
     };
     Aladin.prototype.removeOverlay = function(name) {
         this.view.removeOverlay(name);
@@ -741,6 +743,9 @@ Aladin = (function() {
     Aladin.prototype.getOverlayImageLayer = function() {
         return this.view.overlayImageSurvey;
     };
+    Aladin.prototype.getOverlayImageLayers = function() {
+        return this.view.overlayImageSurveys;
+    };
     // @api
     Aladin.prototype.setOverlayImageLayer = function(imageSurvey, callback) {
         this.view.setOverlayImageSurvey(imageSurvey, callback);
@@ -753,6 +758,10 @@ Aladin = (function() {
 
             Logger.log("changeOverlay", id);
         }
+    };
+
+    Aladin.prototype.addOverlayImageLayer = function(imageSurvey, color, callback) {
+        this.view.addOverlayImageSurvey(imageSurvey, color, callback);
     };
 
     Aladin.prototype.increaseZoom = function(step) {
@@ -1063,18 +1072,20 @@ Aladin = (function() {
                      }
                      if (footprints[i].url) {
                          self.setOverlayImageLayer(footprints[i].id);
-                         self.getOverlayImageLayer().setAlpha(1.0);
                          if (colorIndex == 0) {
-                             self.getOverlayImageLayer().getColorMap().update('red');
+                             color = 'red';
                          } else if (colorIndex == 1) {
-                             self.getOverlayImageLayer().getColorMap().update('green');
+                             color = 'green';
                          } else if (colorIndex == 2) {
-                             self.getOverlayImageLayer().getColorMap().update('blue');
+                             color = 'blue';
                          } else if (colorIndex == 3) {
-                             self.getOverlayImageLayer().getColorMap().update('aqua');
+                             color = 'aqua';
                          } else if (colorIndex == 4) {
-                             self.getOverlayImageLayer().getColorMap().update('magenta');
+                             color = 'magenta';
                          } 
+                         //self.getOverlayImageLayer().getColorMap().update(color);
+                         self.getOverlayImageLayer().setAlpha(1.0);
+                         self.addOverlayImageLayer(footprints[i].id, color);
                      } else {
                          if (colorIndex == 0) {
                              //colorval = '#ee2345'; //red

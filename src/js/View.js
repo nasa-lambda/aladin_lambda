@@ -80,6 +80,8 @@ View = (function() {
     		this.overlays = [];
             this.overlayNames = [];
             this.overlayColors = [];
+            this.overlayImageSurveys = [];
+
             // MOCs
     		this.mocs = [];
     		
@@ -694,30 +696,31 @@ View = (function() {
         */
 		
         var cornersXYViewMapAllsky = this.getVisibleCells(3);
-        
-        // redraw overlay image survey
-		// TODO : does not work if different frames 
-		if (this.overlayImageSurvey && this.overlayImageSurvey.isReady) {
-            var cornersXYViewMapAllsky = this.getVisibleCells(3, this.overlayImageSurvey.cooFrame);
-		    imageCtx.globalAlpha = this.overlayImageSurvey.getAlpha();
-	        if (this.fov>50) {
-		        this.overlayImageSurvey.redrawAllsky(imageCtx, cornersXYViewMapAllsky, this.fov, this.curOverlayNorder);
-	        }
-	        if (this.curOverlayNorder>=3) {
-                var norderOverlay = Math.min(this.curOverlayNorder, this.overlayImageSurvey.maxOrder);
-                if ( norderOverlay != this.curNorder ) {
-				    //cornersXYViewMapHighres = this.getVisibleCells(norderOverlay);
-				    cornersXYViewMapHighres = this.getVisibleCells(norderOverlay, this.overlayImageSurvey.cooFrame);
-                }
-                else {
-                    //cornersXYViewMapHighres = this.getVisibleCells(this.curNorder);
-                    cornersXYViewMapHighres = this.getVisibleCells(this.curNorder, this.overlayImageSurvey.cooFrame);
-                }
-	            this.overlayImageSurvey.redrawHighres(imageCtx, cornersXYViewMapHighres, norderOverlay);
-	        }
-           //imageCtx.globalAlpha = 1.0;
-
-		}
+       
+        // Drawing all surveys to be overlaid
+        for (var i=0; i<this.overlayImageSurveys.length; i++) {
+            // redraw overlay image survey
+		    if (this.overlayImageSurveys[i] && this.overlayImageSurveys[i].isReady) {
+                var cornersXYViewMapAllsky = this.getVisibleCells(3, this.overlayImageSurveys[i].cooFrame);
+		        imageCtx.globalAlpha = this.overlayImageSurveys[i].getAlpha();
+	            if (this.fov>50) {
+		            this.overlayImageSurveys[i].redrawAllsky(imageCtx, cornersXYViewMapAllsky, this.fov, this.curOverlayNorder);
+	            }
+	            if (this.curOverlayNorder>=3) {
+                    var norderOverlay = Math.min(this.curOverlayNorder, this.overlayImageSurveys[i].maxOrder);
+                    if ( norderOverlay != this.curNorder ) {
+				        //cornersXYViewMapHighres = this.getVisibleCells(norderOverlay);
+				        cornersXYViewMapHighres = this.getVisibleCells(norderOverlay, this.overlayImageSurveys[i].cooFrame);
+                    }
+                    else {
+                        //cornersXYViewMapHighres = this.getVisibleCells(this.curNorder);
+                        cornersXYViewMapHighres = this.getVisibleCells(this.curNorder, this.overlayImageSurveys[i].cooFrame);
+                    }
+	                this.overlayImageSurveys[i].redrawHighres(imageCtx, cornersXYViewMapHighres, norderOverlay);
+	            }
+                imageCtx.globalAlpha = 1.0;
+		    }
+        }
 		
 		
 		// redraw HEALPix grid
@@ -1299,6 +1302,45 @@ View = (function() {
         });
     };
 
+    View.prototype.addOverlayImageSurvey = function(overlayImageSurvey, color, callback) {
+        if (! overlayImageSurvey) {
+            return;
+        }
+        
+        // reset canvas to "untaint" canvas if needed
+        // we test if the previous base image layer was using CORS or not
+        if ($.support.cors && this.overlayImageSurvey && ! this.overlayImageSurvey.useCors) {
+            this.untaintCanvases();
+        }
+        
+        var newOverlayImageSurvey;
+        if (typeof overlayImageSurvey == "string") {
+            newOverlayImageSurvey = HpxImageSurvey.getSurveyFromId(overlayImageSurvey);
+            if ( ! newOverlayImageSurvey) {
+                newOverlayImageSurvey = HpxImageSurvey.getSurveyFromId(HpxImageSurvey.DEFAULT_SURVEY_ID);
+            }
+        }
+        else {
+            newOverlayImageSurvey = overlayImageSurvey;
+        }
+        newOverlayImageSurvey.isReady = false;
+        newOverlayImageSurvey.getColorMap().update(color);
+        this.overlayImageSurveys = this.overlayImageSurveys.concat(newOverlayImageSurvey);
+        
+        var self = this;
+        newOverlayImageSurvey.init(this, function() {
+            //self.imageSurvey = newImageSurvey;
+            self.computeNorder();
+            newOverlayImageSurvey.isReady = true;
+            self.requestRedraw();
+            self.updateObjectsLookup();
+            
+            if (callback) {
+                callback();
+            }
+        });
+    };
+
     View.prototype.setUnknownSurveyIfNeeded = function() {
         if (unknownSurveyId) {
             this.setImageSurvey(unknownSurveyId);
@@ -1473,6 +1515,7 @@ View = (function() {
         this.overlays = [];
         this.overlayNames = [];
         this.overlayColors = [];
+        this.overlayImageSurveys = [];
     };
     View.prototype.removeOverlay = function(name) {
         var index = this.overlayNames.indexOf(name);
