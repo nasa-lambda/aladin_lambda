@@ -343,7 +343,7 @@ Aladin = (function() {
         showShareControl:       false,
         showCatalog:            true, // TODO: still used ??
         showFrame:              true,
-        showCooGrid:            false,
+        showCooGrid:            true,
         fullScreen:             false,
         reticleColor:           "rgb(178, 50, 178)",
         reticleSize:            22,
@@ -378,7 +378,64 @@ Aladin = (function() {
             select.append($("<option />").attr("selected", isCurSurvey).val(surveys[i].id).text(surveys[i].name));
         };
     };
- 
+
+    Aladin.prototype.createFootprintsMultSelectDrop = function(surveys) {
+        surveys.sort(function(a, b) {
+            if (a.name > b.name) {
+                return 1;
+            } else if (a.name < b.name) {
+                return -1;
+            } else {
+                return 0;
+            };
+        });
+        var multSelectBoxes = $(this.aladinDiv).find('.aladin-footprintSelection2');
+        multSelectBoxes.empty();
+        overlayNames = aladin.getOverlayNames();
+        overlayColors = aladin.getOverlayColors();
+        hipsFootprints = aladin.getOverlayImageLayers();
+        var multSelectEntries = [];
+        var instrNames = [];
+        for (var i=0; i<surveys.length; i++) {
+            var noInstr = true;
+            for (var j=0; j<multSelectEntries.length; j++) {
+                if (surveys[i].instrument == instrNames[j]) {
+                    noInstr = false;
+                    var selectEntry = $("<option />").attr("value", surveys[i].id).text(surveys[i].name);
+                    multSelectEntries[j].append(selectEntry);
+                    break;
+                };
+            };
+
+            if (noInstr) {
+                multSelectEntry = $('<select multiple="multiple">').attr("name", surveys[i].instrument);
+                multSelectEntry.attr("class", "chosen-select").attr("style", "width:200px");
+                var selectEntry = $("<option />").attr("value", surveys[i].id).text(surveys[i].name);
+                multSelectEntry.append(selectEntry);
+                multSelectEntries = multSelectEntries.concat(multSelectEntry);
+                instrNames = instrNames.concat(surveys[i].instrument);
+            };
+        
+        };
+
+        for (var i=0; i<multSelectEntries.length; i++) {
+            var listentry = $("<li>").attr("name", instrNames[i]);
+            listentry.append(multSelectEntries[i]);
+            listentry.append(instrNames[i]);
+            multSelectBoxes.append(listentry);
+        };
+        console.log(multSelectBoxes);
+        console.log(instrNames);
+        console.log(multSelectEntries);
+        
+        $(function(){
+            $(".chosen-select").chosen({
+                width: "95%"
+            });
+        });
+        
+    };
+
     Aladin.prototype.createFootprintsCheckbox = function(surveys) {
         surveys.sort(function(a, b) {
             if (a.name > b.name) {
@@ -948,6 +1005,7 @@ Aladin = (function() {
                  '<div class="aladin-box-separator"></div>' +
                  '<div class="aladin-label">Footprint</div>' +
                  '<div class="aladin-footprintSelection"></div>' +
+                 '<div class="aladin-footprintSelection2"></div>' +
                  '<div class="aladin-label">Overlay layers</div>');
          
          var cmDiv = layerBox.find('.aladin-cmap');
@@ -1046,6 +1104,7 @@ Aladin = (function() {
 
          // update list of overlaid footprints
          this.createFootprintsCheckbox(HpxImageSurvey.getAvailableFootprints());
+         this.createFootprintsMultSelectDrop(HpxImageSurvey.getAvailableFootprints());
          var footprintSelection = $(this.aladinDiv).find('.aladin-footprintSelection');
          footprintSelection.change(function() {
              aladin.removeOverlays();

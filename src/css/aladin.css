@@ -356,7 +356,12 @@ word-wrap:break-word;
 
 .aladin-footprintSelection {
     width: 250px;
-    list-style-type: none
+    list-style-type: none;
+}
+
+.aladin-footprintSelection2 {
+    width: 250px;
+    list-style-type: none;
 }
 
 .aladin-footprintColor {
@@ -462,4 +467,9 @@ word-wrap:break-word;
 .aladin-layer-label {
 	padding: 0 2px 0 2px;
 	color: #ddd;
+}
+
+ul
+{
+    list-style-type: none;
 }
