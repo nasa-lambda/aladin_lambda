@@ -356,6 +356,7 @@ word-wrap:break-word;
 
 .aladin-footprintSelection {
     width: 250px;
+    list-style-type: none
 }
 
 .aladin-footprintColor {

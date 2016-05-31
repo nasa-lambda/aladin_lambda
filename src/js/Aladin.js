@@ -135,7 +135,7 @@ Aladin = (function() {
 	    
         // retrieve available backgrounds
 	    $.ajax({
-            url: "http://lambda.gsfc.nasa.gov/toolbox/footprint/aladin/json_test.cfc",
+            url: "http://lambda.gsfc.nasa.gov/toolbox/footprint/aladin/footprint_json.cfc",
             data: {"method": "getBackgrounds"},
             method: 'GET',
 	        dataType: 'jsonp',
@@ -162,7 +162,7 @@ Aladin = (function() {
 
 	    // retrieve available footprints
 	    $.ajax({
-            url: "http://lambda.gsfc.nasa.gov/toolbox/footprint/aladin/json_test.cfc",
+            url: "http://lambda.gsfc.nasa.gov/toolbox/footprint/aladin/footprint_json.cfc",
             data: {"method": "getFootprints"},
             method: 'GET',
 	        dataType: 'jsonp',
@@ -335,9 +335,9 @@ Aladin = (function() {
         cooFrame:               "J2000",
         survey:                 "P/PLANCK/R2/LFI/color",
         fov:                    60,
-        showReticle:            true,
+        showReticle:            false,
         showZoomControl:        true,
-        showFullscreenControl:  true,
+        showFullscreenControl:  false,
         showLayersControl:      true,
         showGotoControl:        true,
         showShareControl:       false,
