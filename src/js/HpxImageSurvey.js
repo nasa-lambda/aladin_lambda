@@ -255,7 +255,7 @@ HpxImageSurvey = (function() {
          "maxOrder": 9,
          "frame": "equatorial",
          "format": "jpeg"
-     },*/
+     },
     {
         "id": "P/Finkbeiner",
         "url": "http://alasky.u-strasbg.fr/FinkbeinerHalpha",
@@ -279,7 +279,7 @@ HpxImageSurvey = (function() {
         "maxOrder": 3,
         "frame": "galactic",
         "format": "png fits"
-    }
+    }*/
   ];
 
   HpxImageSurvey.FOOTPRINTS = [
