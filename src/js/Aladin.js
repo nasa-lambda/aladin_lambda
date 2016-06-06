@@ -395,42 +395,76 @@ Aladin = (function() {
         overlayColors = aladin.getOverlayColors();
         hipsFootprints = aladin.getOverlayImageLayers();
         var multSelectEntries = [];
+        var checkboxEntries = [];
         var instrNames = [];
+        var plotInstr_arr = [];
         for (var i=0; i<surveys.length; i++) {
+            var plotInstr = false;
+            for (var k=0; k<overlayNames.length; k++) {
+                if (overlayNames[k] == surveys[i].name) {
+                    plotInstr = true;
+                }
+            }
+            for (var k=0; k<hipsFootprints.length; k++) {
+                if (hipsFootprints[k].name == surveys[i].name) {
+                    plotInstr = true;
+                }
+            }
+
             var noInstr = true;
             for (var j=0; j<multSelectEntries.length; j++) {
                 if (surveys[i].instrument == instrNames[j]) {
                     noInstr = false;
                     var selectEntry = $("<option />").attr("value", surveys[i].id).text(surveys[i].name);
+                    if (plotInstr) {
+                        selectEntry.attr("selected", true);
+                    }
                     multSelectEntries[j].append(selectEntry);
                     break;
                 };
             };
 
             if (noInstr) {
+                var listentry = $("<li>").attr("name", surveys[i].instrument);
+                var checkboxentry = $("<input type='checkbox'>").attr("name", surveys[i].instrument);
+                checkboxEntries = checkboxEntries.concat(checkboxentry);
                 multSelectEntry = $('<select multiple="multiple">').attr("name", surveys[i].instrument);
                 multSelectEntry.attr("class", "chosen-select").attr("style", "width:200px");
                 var selectEntry = $("<option />").attr("value", surveys[i].id).text(surveys[i].name);
+                if (plotInstr) {
+                    selectEntry.attr("selected", true);
+                }
                 multSelectEntry.append(selectEntry);
                 multSelectEntries = multSelectEntries.concat(multSelectEntry);
                 instrNames = instrNames.concat(surveys[i].instrument);
-            };
+                plotInstr_arr = plotInstr_arr.concat(plotInstr);
+            } else {
+                for (var k=0; k<instrNames.length; k++) {
+                    if (instrNames[k] == surveys[i].instrument) {
+                        plotInstr_arr[k] = plotInstr_arr[k] | plotInstr;
+                    }
+                }
+            }
         
         };
 
         for (var i=0; i<multSelectEntries.length; i++) {
             var listentry = $("<li>").attr("name", instrNames[i]);
-            listentry.append(multSelectEntries[i]);
-            listentry.append(instrNames[i]);
+            listentry.append(checkboxEntries[i]);
+            if (plotInstr_arr[i]) {
+                listentry.append(multSelectEntries[i]);
+                checkboxEntries[i].attr("checked", true);
+                console.log("BBB: ", instrNames[i], multSelectEntries[i]);
+                console.log("CCC: ", multSelectEntries[i].val());
+            } else {
+                listentry.append(instrNames[i]);
+            }
             multSelectBoxes.append(listentry);
         };
-        console.log(multSelectBoxes);
-        console.log(instrNames);
-        console.log(multSelectEntries);
         
         $(function(){
             $(".chosen-select").chosen({
-                width: "95%"
+                width: "90%"
             });
         });
         
@@ -1005,6 +1039,7 @@ Aladin = (function() {
                  '<div class="aladin-box-separator"></div>' +
                  '<div class="aladin-label">Footprint</div>' +
                  '<div class="aladin-footprintSelection"></div>' +
+                 '<div class="aladin-label">Footprint 2</div>' +
                  '<div class="aladin-footprintSelection2"></div>' +
                  '<div class="aladin-label">Overlay layers</div>');
          
