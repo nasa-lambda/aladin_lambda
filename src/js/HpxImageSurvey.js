@@ -280,6 +280,15 @@ HpxImageSurvey = (function() {
         "frame": "galactic",
         "format": "png fits"
     }*/
+    {
+        "name": "PLANCK-DUSTPOL",
+        "format": "png fits",
+        "url": "http://lambda.gsfc.nasa.gov/data/hips/Planck_DustPol_Amp_256.fitsHiPS",
+        "frame": "galactic",
+        "id": "PLANCK-DUSTPOL",
+        "instrument": "Planck",
+        "maxOrder": 3
+    }
   ];
 
   HpxImageSurvey.FOOTPRINTS = [

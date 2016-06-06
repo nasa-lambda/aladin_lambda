@@ -333,7 +333,7 @@ Aladin = (function() {
     Aladin.DEFAULT_OPTIONS = {
         target:                 "0 +0",
         cooFrame:               "J2000",
-        survey:                 "P/PLANCK/R2/LFI/color",
+        survey:                 "PLANCK-DUSTPOL",
         fov:                    60,
         showReticle:            false,
         showZoomControl:        true,
