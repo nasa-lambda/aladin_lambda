@@ -360,11 +360,15 @@ word-wrap:break-word;
 }
 
 .aladin-footprintSelection2 {
-    width: 250px;
+    width: 400px;
     list-style-type: none;
 }
 
 .aladin-footprintColor {
+    width: 50px;
+}
+
+.aladin-footprintColor2 {
     width: 50px;
 }
 
