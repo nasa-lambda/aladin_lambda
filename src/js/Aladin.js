@@ -1263,7 +1263,7 @@ Aladin = (function() {
                     multSelectEntry = $('<select multiple="multiple">').attr("name", instrname);
                     multSelectEntry.attr("class", "chosen-select").attr("id", instrname);
                     multSelectEntry.attr("width", "300px");
-                    multSelectEntry.attr("no_results_text", instrname);
+                    multSelectEntry.attr("placeholder_text_multiple", instrname);
                     
                     for (var i=0; i<footprints.length; i++) {
                         if (footprints[i].instrument == instrname) {
