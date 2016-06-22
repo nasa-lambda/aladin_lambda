@@ -355,20 +355,11 @@ word-wrap:break-word;
 }
 
 .aladin-footprintSelection {
-    width: 250px;
-    list-style-type: none;
-}
-
-.aladin-footprintSelection2 {
     width: 400px;
     list-style-type: none;
 }
 
 .aladin-footprintColor {
-    width: 50px;
-}
-
-.aladin-footprintColor2 {
     width: 50px;
 }
 

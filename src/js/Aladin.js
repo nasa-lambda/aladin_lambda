@@ -389,7 +389,7 @@ Aladin = (function() {
                 return 0;
             };
         });
-        var multSelectBoxes = $(this.aladinDiv).find('.aladin-footprintSelection2');
+        var multSelectBoxes = $(this.aladinDiv).find('.aladin-footprintSelection');
         multSelectBoxes.empty();
         overlayNames = aladin.getOverlayNames();
         overlayColors = aladin.getOverlayColors();
@@ -471,7 +471,7 @@ Aladin = (function() {
             if (plotInstr_arr[i]) {
                 listentry.append(multSelectEntries[i]);
                 checkboxEntries[i].attr("checked", true);
-                colorselect = $("<select>").attr("class", '.aladin-footprintColor2').attr("name", instrNames[i]+'color');
+                colorselect = $("<select>").attr("class", '.aladin-footprintColor').attr("name", instrNames[i]+'color');
                 colorselect.append($("<option />").text("Red").attr("selected", colorIndex_arr[i] == 0));
                 colorselect.append($("<option />").text("Green").attr("selected", colorIndex_arr[i] == 1));
                 colorselect.append($("<option />").text("Blue").attr("selected", colorIndex_arr[i] == 2));
@@ -492,67 +492,6 @@ Aladin = (function() {
         
     };
 
-    Aladin.prototype.createFootprintsCheckbox = function(surveys) {
-        surveys.sort(function(a, b) {
-            if (a.name > b.name) {
-                return 1;
-            } else if (a.name < b.name) {
-                return -1;
-            } else {
-                return 0;
-            };
-        });
-        var checkboxes = $(this.aladinDiv).find('.aladin-footprintSelection');
-        checkboxes.empty();
-        overlayNames = aladin.getOverlayNames();
-        overlayColors = aladin.getOverlayColors();
-        hipsFootprints = aladin.getOverlayImageLayers();
-        for (var i=0; i<surveys.length; i++) {
-            var listentry = $("<li>").attr("name", surveys[i].id);
-            var checkboxentry = $("<input type='checkbox'>").attr("name", surveys[i].id);
-            var index = $.inArray(surveys[i].id, overlayNames);
-            var found = index > -1;
-            if (found) {
-                colorIndex = overlayColors[index];
-                checkboxentry.attr("checked", true);
-            }
-            
-            foundHiPS = false;
-            for (var j=0; j<hipsFootprints.length; j++) {
-                if (hipsFootprints[j].id == surveys[i].id) {
-                    foundHiPS = true;
-                    checkboxentry.attr("checked", true);
-                    color = hipsFootprints[j].getColorMap()['map'];
-                    if (color == 'red') {
-                        colorIndex = 0;
-                    } else if (color == 'green') {
-                        colorIndex = 1;
-                    } else if (color == 'blue') {
-                        colorIndex = 2;
-                    } else if (color == 'aqua') {
-                        colorIndex = 3;
-                    } else if (color == 'magenta') {
-                        colorIndex = 4;
-                    }
-                    break;
-                }
-            }
-
-            listentry.append(checkboxentry);
-            listentry.append(surveys[i].name);
-            if (found || foundHiPS) {
-                colorselect = $("<select>").attr("class", '.aladin-footprintColor').attr("name", surveys[i].id);
-                colorselect.append($("<option />").text("Red").attr("selected", colorIndex == 0));
-                colorselect.append($("<option />").text("Green").attr("selected", colorIndex == 1));
-                colorselect.append($("<option />").text("Blue").attr("selected", colorIndex == 2));
-                colorselect.append($("<option />").text("Aqua").attr("selected", colorIndex == 3));
-                colorselect.append($("<option />").text("Magenta").attr("selected", colorIndex == 4));
-                listentry.append(colorselect);
-            }
-            checkboxes.append(listentry);
-        };
-    };
-    
     Aladin.prototype.getOptionsFromQueryString = function() {
         var options = {};
         var requestedTarget = $.urlParam('target');
@@ -1059,10 +998,8 @@ Aladin = (function() {
                  '<div class="aladin-cmap">Color map:' +
                  '<div><select class="aladin-cmSelection"></select><button class="aladin-btn aladin-btn-small aladin-reverseCm" type="button">Reverse</button></div></div>' +
                  '<div class="aladin-box-separator"></div>' +
-                 //'<div class="aladin-label">Footprint</div>' +
-                 //'<div class="aladin-footprintSelection"></div>' +
                  '<div class="aladin-label">Footprint</div>' +
-                 '<div class="aladin-footprintSelection2"></div>' +
+                 '<div class="aladin-footprintSelection"></div>' +
                  '<div class="aladin-label">Overlay layers</div>');
          
          var cmDiv = layerBox.find('.aladin-cmap');
@@ -1159,96 +1096,17 @@ Aladin = (function() {
  
          });
 
-         // update list of overlaid footprints
-         /*
-         this.createFootprintsCheckbox(HpxImageSurvey.getAvailableFootprints());
-         var footprintSelection = $(this.aladinDiv).find('.aladin-footprintSelection');
-         footprintSelection.change(function() {
-             aladin.removeOverlays();
-             var selected = [];
-             $('.aladin-footprintSelection input:checked').each(function() {
-                 selected.push($(this).attr('name'));
-             });
-             var footprints = HpxImageSurvey.getAvailableFootprints();
-             for (var i=0; i<footprints.length; i++) {
-                 var found = $.inArray(footprints[i].id, selected) > -1;
-                 if (found) {
-                     try {
-                        var colorIndex = $("select[name='"+footprints[i].id+"']")[0].selectedIndex;
-                     } catch(err) {
-                        var colorIndex = 0;
-                        var listentry = $("li[name='"+footprints[i].id+"']");
-                        colorselect = $("<select>").attr("class", '.aladin-footprintColor').attr("name", footprints[i].id);
-                        colorselect.append($("<option />").text("Red"));
-                        colorselect.append($("<option />").text("Green"));
-                        colorselect.append($("<option />").text("Blue"));
-                        colorselect.append($("<option />").text("Aqua"));
-                        colorselect.append($("<option />").text("Magenta"));
-                        listentry.append(colorselect);
-                     }
-                     if (footprints[i].url) {
-                         self.setOverlayImageLayer(footprints[i].id);
-                         if (colorIndex == 0) {
-                             color = 'red';
-                         } else if (colorIndex == 1) {
-                             color = 'green';
-                         } else if (colorIndex == 2) {
-                             color = 'blue';
-                         } else if (colorIndex == 3) {
-                             color = 'aqua';
-                         } else if (colorIndex == 4) {
-                             color = 'magenta';
-                         } 
-                         //self.getOverlayImageLayer().getColorMap().update(color);
-                         self.getOverlayImageLayer().setAlpha(1.0);
-                         self.addOverlayImageLayer(footprints[i].id, color);
-                     } else {
-                         if (colorIndex == 0) {
-                             //colorval = '#ee2345'; //red
-                             colorval = '#FF0000'; //red
-                         } else if (colorIndex == 1) {
-                             colorval = '#00FF00'; // green
-                         } else if (colorIndex == 2) {
-                             colorval = '#0000FF'; // blue
-                         } else if (colorIndex == 3) {
-                             colorval = '#00FFFF'; // aqua
-                         } else if (colorIndex == 4) {
-                             colorval = '#FF00FF'; // magenta
-                         }
-                         var overlay = A.graphicOverlay({color: colorval, lineWidth: 3});
-                         aladin.addOverlay(overlay, footprints[i].id, colorIndex);
-                         var ras = footprints[i].ras;
-                         var decs = footprints[i].decs;
-                         var polygon = new Array(1);
-                         for (var k=0; k<ras.length; k++) {
-                            var tmp2 = [ras[k], decs[k]];
-                            polygon[k] = tmp2;
-                         }
-                         overlay.addFootprints(A.polygon(polygon));
-                     }
-                 } else {
-                     var colorSelect = $("select[name='"+footprints[i].id+"']")[0];
-                     if (colorSelect) {
-                         colorSelect.remove();
-                     }
-                 }
-             }
-         });
-         */
-         
          this.createFootprintsMultSelectDrop(HpxImageSurvey.getAvailableFootprints());
-         var footprintSelection2 = $(this.aladinDiv).find('.aladin-footprintSelection2');
+         var footprintSelection2 = $(this.aladinDiv).find('.aladin-footprintSelection');
          footprintSelection2.change(function() {
              aladin.removeOverlays();
              var footprints = HpxImageSurvey.getAvailableFootprints();
              
              //Construct a list of all experiments to plot
              var selected = [];
-             $('.aladin-footprintSelection2 input:checked').each(function() {
+             $('.aladin-footprintSelection input:checked').each(function() {
                  var instrname = $(this).attr('name');
                  var selvals = $("#"+instrname+'multi').chosen().val();
-                 //var temp = $("#"+instrname+'multi').chosen();
-                 //var temp2 = $("select[name='"+instrname+"']");
                  
                  if (selvals === undefined) {    
                  //This occurs if this checkmark was the change and the multiselect doesn't exist
@@ -1276,21 +1134,20 @@ Aladin = (function() {
 
                     listentry.append(multSelectEntry);
                  } else if (selvals === null) {
-                     console.log("NULL");
+                     //console.log("NULL");
                  } else {
                     for (i=0; i<selvals.length; i++) {
                         selected.push(selvals[i]);
                     }
                  }
                 $(function(){
-                    console.log("CHOSENING");
                     $(".chosen-select").chosen({
                         width: "300px"
                     });
                 });
              });
 
-             $('.aladin-footprintSelection2 input:not(:checked)').each(function() {
+             $('.aladin-footprintSelection input:not(:checked)').each(function() {
                  
                  instrname = $(this).attr('name');
 
@@ -1313,7 +1170,6 @@ Aladin = (function() {
 
              });
 
-             console.log("Selected: ", selected);
              for (var i=0; i<footprints.length; i++) {
                  var found = $.inArray(footprints[i].id, selected) > -1;
                  if (found) {
@@ -1324,7 +1180,7 @@ Aladin = (function() {
                      } catch(err) {
                          var colorIndex = 0;
                          var listentry = $("li[name='"+footprints[i].instrument+"']");
-                         colorselect = $("<select>").attr("class", '.aladin-footprintColor2').attr("name", footprints[i].instrument+'color');
+                         colorselect = $("<select>").attr("class", '.aladin-footprintColor').attr("name", footprints[i].instrument+'color');
                          colorselect.attr("id", footprints[i].instrument+'color');
                          colorselect.append($("<option />").text("Red"));
                          colorselect.append($("<option />").text("Green"));
