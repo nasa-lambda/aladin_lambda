@@ -1178,7 +1178,9 @@ Aladin = (function() {
                          var colorIndex = $("select[name='"+footprints[i].instrument+"color']")[0].selectedIndex;
                          var tmp = $("select[name='"+footprints[i].instrument+"color']")[0];
                      } catch(err) {
-                         var colorIndex = 0;
+                         var max = 5;
+                         var min = 0;
+                         var colorIndex = Math.floor(Math.random() * (max - min)) + min;
                          var listentry = $("li[name='"+footprints[i].instrument+"']");
                          colorselect = $("<select>").attr("class", '.aladin-footprintColor').attr("name", footprints[i].instrument+'color');
                          colorselect.attr("id", footprints[i].instrument+'color');
@@ -1187,6 +1189,7 @@ Aladin = (function() {
                          colorselect.append($("<option />").text("Blue"));
                          colorselect.append($("<option />").text("Aqua"));
                          colorselect.append($("<option />").text("Magenta"));
+                         colorselect[0].selectedIndex = colorIndex;
                          listentry.append(colorselect);
                      }
 
