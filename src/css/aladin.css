@@ -8,21 +8,21 @@
 .aladin-imageCanvas {
 	position: absolute;
     z-index: 1;
-	left: 0;
+	left: 430px;
 	top: 0;
 }
 
 .aladin-catalogCanvas {
     position: absolute;
     z-index: 2;
-    left: 0;
+    left: 430px;
     top: 0;
 }
 
 .aladin-reticleCanvas {
     position: absolute;
     z-index: 3;
-    left: 0;
+    left: 430px;
     top: 0;
 }
 
@@ -125,6 +125,7 @@ word-wrap:break-word;
     color: #321bdf;
     /*text-shadow: 0 0 1px white, 0 0 1px white, 0 0 1px white, 0 0 1px white, 0 0 1px white;*/
 	background-color: rgba(255, 255, 255, 0.5);
+    left: 430px;
 }
 
 /* maximize/restore size icons */
@@ -329,6 +330,7 @@ word-wrap:break-word;
 	font-weight: bold;
 	font-size: 18px;
 	font-family: Verdana, Lucida, Arial;
+    /*left: 430px;*/
 }
 
 

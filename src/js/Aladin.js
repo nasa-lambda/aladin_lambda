@@ -135,7 +135,7 @@ Aladin = (function() {
 	    
         // retrieve available backgrounds
 	    $.ajax({
-            url: "http://lambda.gsfc.nasa.gov/toolbox/footprint/aladin/footprint_json.cfc",
+            url: "https://lambda.gsfc.nasa.gov/toolbox/footprint/aladin/footprint_json.cfc",
             data: {"method": "getBackgrounds"},
             method: 'GET',
 	        dataType: 'jsonp',
@@ -162,7 +162,7 @@ Aladin = (function() {
 
 	    // retrieve available footprints
 	    $.ajax({
-            url: "http://lambda.gsfc.nasa.gov/toolbox/footprint/aladin/footprint_json.cfc",
+            url: "https://lambda.gsfc.nasa.gov/toolbox/footprint/aladin/footprint_json.cfc",
             data: {"method": "getFootprints"},
             method: 'GET',
 	        dataType: 'jsonp',
@@ -181,6 +181,7 @@ Aladin = (function() {
 	            HpxImageSurvey.FOOTPRINTS = data;
                 HpxImageSurvey.SURVEYS = HpxImageSurvey.BACKGROUNDS.concat(HpxImageSurvey.FOOTPRINTS);
                 self.view.setUnknownSurveyIfNeeded();
+                self.showLayerBox();
 	        },
 	        error: function(XHR, textStatus, errorThrown) {
                 console.log("Footprint Fail");
@@ -201,7 +202,6 @@ Aladin = (function() {
             
             // we return false so that the default event is not submitted, and to prevent event bubbling
             d.click(function() {self.hideBoxes();self.showLayerBox();return false;});
-
         }
 
         
@@ -391,9 +391,9 @@ Aladin = (function() {
         });
         var multSelectBoxes = $(this.aladinDiv).find('.aladin-footprintSelection');
         multSelectBoxes.empty();
-        overlayNames = aladin.getOverlayNames();
-        overlayColors = aladin.getOverlayColors();
-        hipsFootprints = aladin.getOverlayImageLayers();
+        overlayNames = this.getOverlayNames();
+        overlayColors = this.getOverlayColors();
+        hipsFootprints = this.getOverlayImageLayers();
         var multSelectEntries = [];
         var checkboxEntries = [];
         var instrNames = [];

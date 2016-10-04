@@ -157,7 +157,10 @@ View = (function() {
 		
 		this.width = Math.max(this.width, 1);
 		this.height = Math.max(this.height, 1); // this prevents many problems when div size is 0s
-        
+       
+        if (this.width > this.height) {
+            this.width = this.height;
+        }
 		
 		this.cx = this.width/2;
 		this.cy = this.height/2;
