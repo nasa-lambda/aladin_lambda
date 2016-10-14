@@ -283,7 +283,7 @@ HpxImageSurvey = (function() {
     {
         "name": "PLANCK-DUSTPOL",
         "format": "png fits",
-        "url": "https://lambda.gsfc.nasa.gov/data/hips/Planck_DustPol_Amp_256.fitsHiPS",
+        "url": "/data/hips/Planck_DustPol_Amp_256.fitsHiPS",
         "frame": "galactic",
         "id": "PLANCK-DUSTPOL",
         "instrument": "Planck",
@@ -292,7 +292,7 @@ HpxImageSurvey = (function() {
     {
         "name": "PLANCK-DUSTPOL-LOG",
         "format": "png fits",
-        "url": "https://lambda.gsfc.nasa.gov/data/hips/Planck_DustPol_Amp_log_256.fitsHiPS",
+        "url": "/data/hips/Planck_DustPol_Amp_log_256.fitsHiPS",
         "frame": "galactic",
         "id": "PLANCK-DUSTPOL-LOG",
         "instrument": "Planck",
@@ -301,7 +301,7 @@ HpxImageSurvey = (function() {
     {
         "name": "PLANCK-DUST",
         "format": "png fits",
-        "url": "https://lambda.gsfc.nasa.gov/data/hips/Planck_Dust_256.fitsHiPS",
+        "url": "/data/hips/Planck_Dust_256.fitsHiPS",
         "frame": "galactic",
         "id": "PLANCK-DUST",
         "instrument": "Planck",
@@ -310,7 +310,7 @@ HpxImageSurvey = (function() {
     {
         "name": "PLANCK-DUST-LOG",
         "format": "png fits",
-        "url": "https://lambda.gsfc.nasa.gov/data/hips/Planck_Dust_log_256.fitsHiPS",
+        "url": "/data/hips/Planck_Dust_log_256.fitsHiPS",
         "frame": "galactic",
         "id": "PLANCK-DUST-LOG",
         "instrument": "Planck",
@@ -319,7 +319,7 @@ HpxImageSurvey = (function() {
     {
         "name": "PLANCK-SYNCH",
         "format": "png fits",
-        "url": "https://lambda.gsfc.nasa.gov/data/hips/Planck_Synch_256.fitsHiPS",
+        "url": "/data/hips/Planck_Synch_256.fitsHiPS",
         "frame": "galactic",
         "id": "PLANCK-SYNCH",
         "instrument": "Planck",
@@ -328,7 +328,7 @@ HpxImageSurvey = (function() {
     {
         "name": "PLANCK-SYNCH-LOG",
         "format": "png fits",
-        "url": "https://lambda.gsfc.nasa.gov/data/hips/Planck_Synch_log_256.fitsHiPS",
+        "url": "/data/hips/Planck_Synch_log_256.fitsHiPS",
         "frame": "galactic",
         "id": "PLANCK-SYNCH-LOG",
         "instrument": "Planck",
@@ -337,7 +337,7 @@ HpxImageSurvey = (function() {
     {
         "name": "PLANCK-SYNCHPOL",
         "format": "png fits",
-        "url": "https://lambda.gsfc.nasa.gov/data/hips/Planck_SynchPol_Amp_256.fitsHiPS",
+        "url": "/data/hips/Planck_SynchPol_Amp_256.fitsHiPS",
         "frame": "galactic",
         "id": "PLANCK-SYNCHPOL",
         "instrument": "Planck",
@@ -346,7 +346,7 @@ HpxImageSurvey = (function() {
     {
         "name": "PLANCK-SYNCHPOL-LOG",
         "format": "png fits",
-        "url": "https://lambda.gsfc.nasa.gov/data/hips/Planck_SynchPol_Amp_log_256.fitsHiPS",
+        "url": "/data/hips/Planck_SynchPol_Amp_log_256.fitsHiPS",
         "frame": "galactic",
         "id": "PLANCK-SYNCHPOL-LOG",
         "instrument": "Planck",

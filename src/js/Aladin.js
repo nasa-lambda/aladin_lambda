@@ -135,7 +135,7 @@ Aladin = (function() {
 	    
         // retrieve available backgrounds
 	    $.ajax({
-            url: "https://lambda.gsfc.nasa.gov/toolbox/footprint/aladin/footprint_json.cfc",
+            url : "footprint_json.cfc",
             data: {"method": "getBackgrounds"},
             method: 'GET',
 	        dataType: 'jsonp',
@@ -162,7 +162,7 @@ Aladin = (function() {
 
 	    // retrieve available footprints
 	    $.ajax({
-            url: "https://lambda.gsfc.nasa.gov/toolbox/footprint/aladin/footprint_json.cfc",
+            url: "footprint_json.cfc",
             data: {"method": "getFootprints"},
             method: 'GET',
 	        dataType: 'jsonp',
