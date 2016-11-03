@@ -1208,6 +1208,42 @@ Aladin = (function() {
                          } 
                          self.getOverlayImageLayer().setAlpha(1.0);
                          self.addOverlayImageLayer(footprints[i].id, color);
+                     } else if (footprints[i].dec_min){
+                         if (colorIndex == 0) {
+                             colorval = '#FF0000'; //red
+                         } else if (colorIndex == 1) {
+                             colorval = '#00FF00'; // green
+                         } else if (colorIndex == 2) {
+                             colorval = '#0000FF'; // blue
+                         } else if (colorIndex == 3) {
+                             colorval = '#00FFFF'; // aqua
+                         } else if (colorIndex == 4) {
+                             colorval = '#FF00FF'; // magenta
+                         }
+                         var overlay1 = A.graphicOverlay({color: colorval, lineWidth: 3});
+                         var overlay2 = A.graphicOverlay({color: colorval, lineWidth: 3});
+                         aladin.addOverlay(overlay1, footprints[i].id, colorIndex);
+                         aladin.addOverlay(overlay2, footprints[i].id, colorIndex);
+                         var dec_min = footprints[i].dec_min;
+                         var dec_max = footprints[i].dec_max;
+                         var polygon_min = new Array(1);
+                         var polygon_max = new Array(1);
+                         var npts = 360;
+                         var maxRA = 360.0;
+                         for (var k=0; k<npts; k++) {
+                            var tmp2 = [k*maxRA/(npts-1), dec_min];
+                            polygon_min[k] = tmp2;
+                            tmp2 = [k*maxRA/(npts-1), dec_max];
+                            polygon_max[k] = tmp2;
+                         }
+                         for (var k=0; k<npts; k++) {
+                             tmp2 = [maxRA - k*maxRA/(npts-1), dec_min];
+                             polygon_min[k+npts] = tmp2;
+                             tmp2 = [maxRA - k*maxRA/(npts-1), dec_max];
+                             polygon_max[k+npts] = tmp2;
+                         }
+                         overlay1.addFootprints(A.polygon(polygon_min));
+                         overlay2.addFootprints(A.polygon(polygon_max));
                      } else {
                          if (colorIndex == 0) {
                              colorval = '#FF0000'; //red

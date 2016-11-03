@@ -150,7 +150,7 @@ Overlay = (function() {
     	ctx.beginPath();
     	xyviews = [];
     	for (var k=0, len = this.overlays.length; k<len; k++) {
-    		xyviews.push(this.drawFootprint(this.overlays[k], ctx, projection, frame, width, height, largestDim, zoomFactor));
+    		xyviews.push(this.drawFootprint2(this.overlays[k], ctx, projection, frame, width, height, largestDim, zoomFactor));
     	}
         ctx.stroke();
 
@@ -212,6 +212,7 @@ Overlay = (function() {
                     xy = projection.project(radecArray[k][0], radecArray[k][1]);
                 }
                 if (!xy) {
+                    continue;
                     return null;
                 }
                 var xyview = AladinUtils.xyToView(xy.X, xy.Y, width, height, largestDim, zoomFactor);
@@ -219,6 +220,7 @@ Overlay = (function() {
                 if (!show && xyview.vx<width  && xyview.vx>=0 && xyview.vy<=height && xyview.vy>=0) {
                     show = true;
                 }
+                //show = false;
             }
 
             if (show) {
@@ -237,6 +239,71 @@ Overlay = (function() {
 
 
     };
+
+    Overlay.prototype.drawFootprint2 = function(f, ctx, projection, frame, width, height, largestDim, zoomFactor) {
+        //A modified drawFootprint that will be able to draw the parts of the footprint that can be visualized when
+        //parts of the footprint are outside of the visible projection. In the other version, nothing would be 
+        //plotted.
+
+        if (! f.isShowing) {
+            return null;
+        }
+        var xyviewArray = [];
+        var xyviews = [];
+
+        var show = false;
+        var radecArray = f.polygons;
+        var pushArray = false;
+        // for
+            for (var k=0, len=radecArray.length; k<len; k++) {
+                var xy;
+                if (frame!=CooFrameEnum.J2000) {
+                    var lonlat = CooConversion.J2000ToGalactic([radecArray[k][0], radecArray[k][1]]);
+                    xy = projection.project(lonlat[0], lonlat[1]);
+                }
+                else {
+                    xy = projection.project(radecArray[k][0], radecArray[k][1]);
+                }
+                if (!xy) { 
+                    if (pushArray) {
+                        xyviews.push(xyviewArray);
+                        pushArray = false;
+                    }
+                    xyviewArray = [];
+                    continue;
+                    //return null;
+                }
+                var xyview = AladinUtils.xyToView(xy.X, xy.Y, width, height, largestDim, zoomFactor);
+                xyviewArray.push(xyview);
+                pushArray = true;
+                if (!show && xyview.vx<width  && xyview.vx>=0 && xyview.vy<=height && xyview.vy>=0) {
+                    show = true;
+                }
+                //show = false;
+            }
+            if (pushArray) {
+                xyviews.push(xyviewArray);
+            }
+
+            if (show) {
+                for (var j=0; j<xyviews.length; j++) {
+                    xyviewArray = xyviews[j];
+                    ctx.moveTo(xyviewArray[0].vx, xyviewArray[0].vy);
+                    for (var k=1, len=xyviewArray.length; k<len; k++) {
+                        ctx.lineTo(xyviewArray[k].vx, xyviewArray[k].vy);
+                    }
+                }
+            }
+            else {
+                //return null;
+            }
+        // end for
+
+        return xyviewArray;
+
+    };
+        
+
 
     Overlay.prototype.drawFootprintSelected = function(ctx, xyview) {
         if (!xyview) {
