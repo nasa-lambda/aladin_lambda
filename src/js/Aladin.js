@@ -182,6 +182,12 @@ Aladin = (function() {
                 HpxImageSurvey.SURVEYS = HpxImageSurvey.BACKGROUNDS.concat(HpxImageSurvey.FOOTPRINTS);
                 self.view.setUnknownSurveyIfNeeded();
                 self.showLayerBox();
+
+                //Click on a checkbox if we have a specific URL variable
+                exp_to_show = getQueryVariable("experiment");
+                if (exp_to_show !== false) {
+                    $(":checkbox[name="+exp_to_show+"]").click()
+                }
 	        },
 	        error: function(XHR, textStatus, errorThrown) {
                 console.log("Footprint Fail");
@@ -318,7 +324,7 @@ Aladin = (function() {
         zoomMinus.bind('mousedown', function(e) {
             e.preventDefault(); // to prevent text selection
         });
-        
+
         // go to full screen ?
         if (options.fullScreen) {
             window.setTimeout(function() {self.toggleFullscreen();}, 1000);
@@ -1480,7 +1486,7 @@ Aladin = (function() {
      Aladin.prototype.getParentDiv = function() {
          return $(this.aladinDiv);
      };
-    
+ 
 	return Aladin;
 })();
 
@@ -1646,3 +1652,13 @@ if ($) {
 }
 
 // TODO: callback function onAladinLiteReady
+function getQueryVariable(variable) {
+    var query = window.location.search.substring(1);
+    var vars = query.split("&");
+    for (var i=0;i<vars.length;i++) {
+       var pair = vars[i].split("=");
+       if(pair[0] == variable){return pair[1];}
+    }
+    return(false);
+}
+        
