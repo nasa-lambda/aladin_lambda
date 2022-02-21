@@ -356,12 +356,20 @@ HpxImageSurvey = (function() {
 
   HpxImageSurvey.FOOTPRINTS = [
     /*{
+        "name": "SPIDER Test",
+        "format": "png fits",
+        "url": "/data/hips/SPIDER_hits_90ghz.fitsHiPS",
         "id": "SPIDER-Test",
-        "url": "http://lambda.gsfc.nasa.gov/data/hips/SPIDER_hits_150ghz.fitsHiPS",
-        "name": "AAA SPIDER Test",
         "maxOrder": 3,
         "frame": "equatorial",
-        "format": "png fits"
+        "instrument": "TEST"
+    },
+    {
+        "name": "StripeTest",
+        "id": "StripeTest",
+        "dec_min": -20.0,
+        "dec_max": 30.0,
+        "instrument": "StripeTest"
     }*/
   ];
 
