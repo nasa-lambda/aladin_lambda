@@ -135,10 +135,11 @@ Aladin = (function() {
 	    
         // retrieve available backgrounds
 	    $.ajax({
-            url : "footprint_json.cfc",
-            data: {"method": "getBackgrounds"},
+            url : "backgroundDict.json",
+            // url : "footprint_json.cfc",
+            // data: {"method": "getBackgrounds"},
             method: 'GET',
-	        dataType: 'jsonp',
+	        dataType: 'json',
 	        success: function(data) {
                 console.log("Background success");
                 var map = {};
@@ -162,10 +163,11 @@ Aladin = (function() {
 
 	    // retrieve available footprints
 	    $.ajax({
-            url: "footprint_json.cfc",
-            data: {"method": "getFootprints"},
+            url : "footprintDict.json",
+            // url: "footprint_json.cfc",
+            // data: {"method": "getFootprints"},
             method: 'GET',
-	        dataType: 'jsonp',
+	        dataType: 'json',
 	        success: function(data) {
                 console.log("Footprint success");
                 var map = {};
